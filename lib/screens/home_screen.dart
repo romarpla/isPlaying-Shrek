@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -6,14 +7,37 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  static const platformChannel =
+      MethodChannel('test.flutter.methodchannel/iOS');
   bool isPlaying = false;
+
+  Future<void> playMusic() async {
+    String _model;
+    try {
+      final String result =
+          await platformChannel.invokeMethod('getDeviceModel');
+      _model = result;
+    } catch (e) {
+      _model = "Can't fetch the method: '$e'.";
+    }
+  }
+
+  Future<void> stopMusic() async {
+    String _model;
+    try {
+      final String result = await platformChannel.invokeMethod('stopMusic');
+      _model = result;
+    } catch (e) {
+      _model = "Can't fetch the method: '$e'.";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       //* AppBar
       appBar: AppBar(
-        title: Text('Make Shrek dance'),
+        title: const Text('Make Shrek dance'),
         elevation: 0,
       ),
 
@@ -36,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {
                       isPlaying = !isPlaying;
                       setState(() {});
-                      print('Pressed $isPlaying');
+                      stopMusic();
                     },
                     child: const Text('Stop playing'),
                   )
@@ -55,18 +79,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {
                       isPlaying = !isPlaying;
                       setState(() {});
-                      print('Pressed $isPlaying');
+                      playMusic();
                     },
                     child: const Text('Start Playing'),
                   )
                 ],
               ),
             ),
-      // body: currentPage == 0
-      //       ? CustomScreen(color:  Colors.pink )
-      //       : currentPage == 1
-      //           ? CustomScreen(color:  Colors.indigo )
-      //           : CustomScreen(color:  Colors.green ),
     );
   }
 }
