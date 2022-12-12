@@ -9,7 +9,7 @@ import AVFoundation
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
-    let deviceChannel = FlutterMethodChannel(name: "test.flutter.methodchannel/iOS",binaryMessenger: controller.binaryMessenger)
+    let deviceChannel = FlutterMethodChannel(name: "flutter.methodchannel/iOS",binaryMessenger: controller.binaryMessenger)
     prepareMethodHandler(deviceChannel: deviceChannel)
 
     GeneratedPluginRegistrant.register(with: self)
@@ -20,7 +20,7 @@ import AVFoundation
         
         deviceChannel.setMethodCallHandler({
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-            if call.method == "getDeviceModel" {
+            if call.method == "playMusic" {
                 self.playMusic()
             }
             else if call.method == "stopMusic" {
@@ -32,15 +32,6 @@ import AVFoundation
             }
             
         })
-    }
-    
-    private func receiveDeviceModel(result: FlutterResult) {
-        // 7
-        let deviceModel = UIDevice.current.model
-        playMusic()
-        
-        // 8
-        result(deviceModel)
     }
     
     var player: AVAudioPlayer?
@@ -56,6 +47,7 @@ import AVFoundation
 
             guard let player = player else { return }
 
+            player.numberOfLoops = -1
             player.play()
         } catch let error {
             print(error.localizedDescription)

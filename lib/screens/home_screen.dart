@@ -7,28 +7,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static const platformChannel =
-      MethodChannel('test.flutter.methodchannel/iOS');
+  static const platformChannel = MethodChannel('flutter.methodchannel/iOS');
   bool isPlaying = false;
 
-  Future<void> playMusic() async {
-    String _model;
+  Future<void> music(String action) async {
     try {
-      final String result =
-          await platformChannel.invokeMethod('getDeviceModel');
-      _model = result;
+      await platformChannel.invokeMethod(action);
     } catch (e) {
-      _model = "Can't fetch the method: '$e'.";
-    }
-  }
-
-  Future<void> stopMusic() async {
-    String _model;
-    try {
-      final String result = await platformChannel.invokeMethod('stopMusic');
-      _model = result;
-    } catch (e) {
-      _model = "Can't fetch the method: '$e'.";
+      rethrow;
     }
   }
 
@@ -47,7 +33,10 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('Listen that JAM'),
+                  const Text(
+                    'Listen to this JAM!!!',
+                    style: TextStyle(fontSize: 20),
+                  ),
                   Image.network(
                     'https://www.icegif.com/wp-content/uploads/shrek-icegif.gif',
                     loadingBuilder: (context, child, loadingProgress) {
@@ -60,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {
                       isPlaying = !isPlaying;
                       setState(() {});
-                      stopMusic();
+                      music('stopMusic');
                     },
                     child: const Text('Stop playing'),
                   )
@@ -71,7 +60,10 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('You are not playing any music'),
+                  const Text(
+                    'You are not playing any music',
+                    style: TextStyle(fontSize: 20),
+                  ),
                   Image.network(
                     'https://pbs.twimg.com/media/Emi0b6sXYAAsb03.jpg',
                   ),
@@ -79,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {
                       isPlaying = !isPlaying;
                       setState(() {});
-                      playMusic();
+                      music('playMusic');
                     },
                     child: const Text('Start Playing'),
                   )
